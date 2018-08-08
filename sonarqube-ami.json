@@ -1,0 +1,41 @@
+{
+  "_comment" : "Packer template for Sonarqube",
+  "variables": {
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "build_number": "{{env `BUILD_NUMBER`}}",
+    "region":         "us-east-1"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami": "ami-76ef8f09",
+    "instance_type": "t2.small",
+    "ssh_username": "ec2-user",
+    "ami_name": "sonarqube-packer-{{user `build_number`}}"
+  }],
+  "provisioners": [
+    {
+     "type": "file",
+     "source": "./roles",
+     "destination": "/home/ec2-user/"
+    },
+    {
+     "type": "file",
+     "source": "./sonarqube-play.yml",
+     "destination": "/home/ec2-user/sonarqube-play.yml"
+    },
+    {
+    "type": "shell",
+    "inline": [
+      "sleep 10",
+      "sudo yum install epel-release -y ",
+      "sudo yum install ansible -y",
+      "export ANSIBLE_HOST_KEY_CHECKING=False",
+      "export ANSIBLE_STDOUT_CALLBACK=debug",
+      "ansible-playbook sonarqube-play.yml"
+      ]
+  }]
+}

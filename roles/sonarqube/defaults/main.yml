@@ -1,0 +1,9 @@
+---
+# defaults file for common
+
+java_version: 1.8.0
+sonarqube_version: 7.2.1
+sonarqube_user: sonarqube
+sonarqube_password: neworgpassword123QW!$
+sonarqube_url: sonarqube-qa.c0bbnobr3jwv.us-east-1.rds.amazonaws.com
+

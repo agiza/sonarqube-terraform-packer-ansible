@@ -1,0 +1,74 @@
+---
+# tasks file for common
+
+- name: install Packages
+  yum: pkg={{item}} state=installed update_cache=true
+  with_items:
+    - java-{{ java_version }}-openjdk-devel
+    - wget
+    - telnet
+    - unzip 
+ 
+- name: Create sonarqube dir
+  file: path=/opt/ state=directory
+
+- name: Unarchive sonarqube
+  unarchive:
+    src: https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-{{ sonarqube_version }}.zip
+    dest: /opt/
+    remote_src: yes
+    mode: 0775
+
+- name: sonarqube installation dir
+  debug:  msg="sonarqube installation path = /opt/sonarqube-{{ sonarqube_version }}"
+
+- name: Move dir
+  command: mv /opt/sonarqube-{{ sonarqube_version }} /opt/sonarqube
+  ignore_errors: True
+
+- name     : template remote hosts
+  template :
+    src   : "sonar.properties.tmpl"
+    dest  : /opt/sonarqube/conf/sonar.properties
+    mode: 0775
+
+- name: Copy service file 
+  copy:
+    src: "sonar.service"
+    dest: /etc/systemd/system/sonar.service
+    mode: 0644
+
+- name: Copy service file
+  copy:
+    src: "sonar.service"
+    dest: /etc/systemd/system/sonar.service
+    mode: 0644
+
+- name: Add the user 'sonar'                                                                                      
+  user:
+    name: sonar
+    shell: /sbin/nologin
+
+- name: Ensure group "sonar" exists
+  group:
+    name: sonar    
+    state: present
+
+- replace:
+    path: /opt/sonarqube/bin/linux-x86-64/sonar.sh 
+    regexp: '#RUN_AS_USER='
+    replace: 'RUN_AS_USER=sonar'
+
+- name: change ownership
+  file: dest=/opt/sonarqube owner=sonar group=sonar mode=u=rwX,g=rwX,o=rX recurse=yes
+
+- name: restart sonar
+  service:
+    name: sonar
+    state: started
+
+- name: Enable service sonar
+  service:
+    name: sonar
+    enabled: yes
+

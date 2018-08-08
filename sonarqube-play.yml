@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  connection: local
+#- hosts: vk
+  become: yes
+  roles:
+     - sonarqube
+
