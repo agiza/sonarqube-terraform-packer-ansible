@@ -10,7 +10,7 @@ output "this_db_instance_arn" {
 
 output "this_db_instance_endpoint" {
   description = "The connection endpoint"
-  value       = "${aws_db_instance.this.*.endpoint}"
+  value       = "${aws_db_instance.this.endpoint}"
 }
 
 output "this_db_instance_id" {
@@ -35,7 +35,7 @@ output "this_db_instance_username" {
 
 output "this_db_instance_password" {
   description = "The database password (this password may be old, because Terraform doesn't track it after initial creation)"
-  value       = "${aws_db_instance.this.*.password}"
+  value       = "${aws_db_instance.this.password}"
 }
 
 output "this_db_instance_port" {

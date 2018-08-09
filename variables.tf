@@ -47,7 +47,7 @@ variable "username" {
 }
 
 variable "password" {
-  default = "neworgpassword123QW!$" 
+  default = "neworgpassword123QW!$dqguyeuyyc" 
 }
 
 variable "port" {
@@ -59,4 +59,12 @@ variable "db_subnet_group_name" { default = "" }
 variable "identifier" { default = ""  }
 
 variable "target_id" { default = ""  }
+
+variable "private_key" { 
+     default = "~/.ssh/id_rsa"
+}
+
+variable "ansible_play" { 
+     default = "sonarqube-play.yml" 
+}
 

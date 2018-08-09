@@ -1,3 +1,4 @@
+/*
 data "aws_ami" "sonarqube_ami" {
   most_recent      = true
 
@@ -10,6 +11,7 @@ data "aws_ami" "sonarqube_ami" {
     values = ["hvm"]
   }
 }
+*/
 
 resource "aws_key_pair" "ec2_kp" {
   key_name   = "${var.project}_${var.env}_kp"
@@ -18,7 +20,8 @@ resource "aws_key_pair" "ec2_kp" {
 
 resource "aws_instance" "ec2" {
 
-  ami                    = "${data.aws_ami.sonarqube_ami.id}"
+#  ami                    = "${data.aws_ami.sonarqube_ami.id}"
+  ami                    = "${var.ami}"
   instance_type          = "${var.instance_type}"
   subnet_id              = "${var.subnet_id}"
   key_name               = "${aws_key_pair.ec2_kp.key_name}"
@@ -29,7 +32,7 @@ resource "aws_instance" "ec2" {
     volume_size           = "${var.root_device_size}"
   }
 
-  tags = "${merge(map("Name", format("%s-%s-ec2", var.project, var.env)), var.default_tags)}"
+  tags = "${merge(map("Name", format("%s-%s-ec2", var.project, var.env)), var.default_tags, map("role", "sonarqube"))}"
 }
 
 resource "aws_eip" "eip" {

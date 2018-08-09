@@ -26,17 +26,11 @@
   command: mv /opt/sonarqube-{{ sonarqube_version }} /opt/sonarqube
   ignore_errors: True
 
-- name     : template remote hosts
-  template :
-    src   : "sonar.properties.tmpl"
+- name: copy config file
+  copy:
+    src   : "sonar.properties"
     dest  : /opt/sonarqube/conf/sonar.properties
     mode: 0775
-
-- name: Copy service file 
-  copy:
-    src: "sonar.service"
-    dest: /etc/systemd/system/sonar.service
-    mode: 0644
 
 - name: Copy service file
   copy:

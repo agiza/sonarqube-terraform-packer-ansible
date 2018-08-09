@@ -67,4 +67,40 @@ module "alb" {
   tags = "${merge(map("Name", format("%s-%s-alb", var.project, var.env)), var.default_tags)}"
 }
 
+data "template_file" "init" {
+  depends_on = ["module.rds_instance"]
 
+  template = "${file("${path.module}/roles/sonarqube/templates/sonar.properties.tmpl")}"
+
+  vars {
+    sonarqube_password = "${module.rds_instance.this_db_instance_password}"
+    sonarqube_url = "${module.rds_instance.this_db_instance_endpoint}"
+  }
+}
+
+resource "local_file" "local" {
+    content     = "${data.template_file.init.rendered}"
+    filename = "${path.module}/roles/sonarqube/files/sonar.properties"
+}
+
+resource "null_resource" "delay" {
+  provisioner "local-exec" {
+    command = "sleep 20"
+  }
+  triggers = {
+    "delay" = "${local_file.local.filename}"
+  }
+}
+
+resource null_resource "ansible_run" {
+  depends_on = ["null_resource.delay"]
+  depends_on = ["module.rds_instance"]
+  depends_on = ["local_file.local.filename"]  	
+
+  triggers {
+       ansible_file = "${sha1(file("${path.module}/${var.ansible_play}"))}"
+      }
+  provisioner "local-exec" {
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./ec2.py --private-key ${var.private_key} ${var.ansible_play}"   ## Need a better way to add delay, dependency on RDS
+  }
+}

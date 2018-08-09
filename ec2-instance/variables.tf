@@ -9,7 +9,7 @@ variable "default_tags" { type = "map" }
 variable "tags" {}
 
 variable "ami" {
-  default     = "ami-759bc50a"
+  default     = "ami-76ef8f09"
 }
 
 variable "instance_count" {

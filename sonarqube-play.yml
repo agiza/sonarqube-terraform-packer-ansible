@@ -1,7 +1,23 @@
 ---
+- name: Wait for SSH 
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Wait for Sonarqube instance to be running (300 secs)
+      wait_for:
+        port: 22
+        host: "{{ hostvars[groups['tag_role_sonarqube'][0]].inventory_hostname  }}"
+        search_regex: OpenSSH
+        delay: 10
+      connection: local
+
 - hosts: localhost
   connection: local
-#- hosts: vk
+  tasks:
+    - debug: msg="Sonarqube IP is - {{ hostvars[groups['tag_role_sonarqube'][0]].inventory_hostname  }}"
+
+- hosts: tag_role_sonarqube
+  remote_user: ec2-user
   become: yes
   roles:
      - sonarqube

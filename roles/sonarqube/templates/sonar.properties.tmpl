@@ -1,5 +1,5 @@
 # Property values can:
-# - reference an environment variable, for example sonar.jdbc.url= ${env:SONAR_JDBC_URL}
+# - reference an environment variable, for example sonar.jdbc.url=
 # - be encrypted. See https://redirect.sonarsource.com/doc/settings-encryption.html
 
 #--------------------------------------------------------------------------------------------------
@@ -13,8 +13,8 @@
 # User credentials.
 # Permissions to create tables, indices and triggers must be granted to JDBC user.
 # The schema must be created first.
-sonar.jdbc.username={{ sonarqube_user }}
-sonar.jdbc.password={{ sonarqube_password }}
+sonar.jdbc.username=sonarqube
+sonar.jdbc.password=${sonarqube_password}
 
 #----- Embedded Database (default)
 # H2 embedded database server listening port, defaults to 9092
@@ -38,7 +38,7 @@ sonar.jdbc.password={{ sonarqube_password }}
 
 #----- PostgreSQL 8.x or greater
 # If you don't use the schema named "public", please refer to http://jira.sonarsource.com/browse/SONAR-5000
-sonar.jdbc.url=jdbc:postgresql://{{ sonarqube_url }}:5432/sonarqube
+sonar.jdbc.url=jdbc:postgresql://${sonarqube_url}/sonarqube
 
 
 #----- Microsoft SQLServer 2014/2016 and SQL Azure
@@ -388,7 +388,6 @@ sonar.jdbc.url=jdbc:postgresql://{{ sonarqube_url }}:5432/sonarqube
 # The value displayed for anonymous users is "-".
 # The SonarQube's HTTP request ID can be added to the pattern with "%reqAttribute{ID}" (since version 6.2).
 # If SonarQube is behind a reverse proxy, then the following value allows to display the correct remote IP address:
-#sonar.web.accessLogs.pattern=%i{X-Forwarded-For} %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}" "%reqAttribute{ID}"
 # Default value (which was "combined" before version 6.2) is equivalent to "combined + SQ HTTP request ID":
 #sonar.web.accessLogs.pattern=%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}" "%reqAttribute{ID}"
 
